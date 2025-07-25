@@ -167,7 +167,7 @@ body {
       margin-bottom: 8px;
     }
 
-    /* @media (max-width: 700px) {
+    @media (max-width: 700px) {
       .card {
         width: 98vw;
         min-height: 90vw;
@@ -195,4 +195,4 @@ body {
         font-size: 1.2em;
         padding: 14px;
       }
-    } */
+    }
