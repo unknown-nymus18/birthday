@@ -1,104 +1,157 @@
 document.addEventListener('DOMContentLoaded', function() {
-  var notes = [
-    document.querySelector('.note1'), // top-left
-    document.querySelector('.note3'), // top-right
-    document.querySelector('.note5'), // mid-left
-    document.querySelector('.note6'), // mid-right
-    document.querySelector('.note2'), // bottom-left
-    document.querySelector('.note4'), // bottom-right
-    document.querySelector('.note7'),
-    document.querySelector('.note8')
-  ];
-  var birthdayRightSpace = document.querySelector('.birthday-right-space');
-  var wish = document.getElementById('birthdayWish');
-  var animating = false;
-  var interval = null;
-  var zBase = 10;
+  // Audio functionality
+  const audio = document.getElementById('play-music');
+  let audioStarted = false;
 
-  // Polaroid shuffle animation: bring each note to front in turn, with smoother transitions and delay
-  function startShuffle() {
-    var idx = 0;
-    var allItems = notes.concat([birthdayRightSpace]);
-    interval = setInterval(function() {
-      allItems.forEach(function(n, i) {
-        if (!n) return;
-        if (n.classList) n.classList.remove('bring-to-front');
-        if (n.style) {
-          n.style.transition = 'transform 0.7s cubic-bezier(.68,-0.55,.27,1.55), opacity 0.6s, z-index 0s';
-          n.style.zIndex = zBase + i;
-          if (n.classList && !n.classList.contains('birthday-right-space')) {
-            n.style.transform = n.style.transform.replace(/scale\([^)]+\)/, '').trim();
-          }
-        }
+  // Start audio on first user interaction
+  function enableAudio() {
+    if (!audioStarted) {
+      audio.play().then(() => {
+        console.log("🎵 Birthday music is playing!");
+        audioStarted = true;
+      }).catch(e => {
+        console.warn("Audio autoplay blocked:", e);
       });
-      setTimeout(function() {
-        var current = allItems[idx];
-        if (!current) return;
-        if (current === birthdayRightSpace) {
-          current.classList.add('bring-to-front');
-        } else {
-          current.style.transition = 'transform 0.7s cubic-bezier(.68,-0.55,.27,1.55), opacity 0.6s, z-index 0s';
-          current.style.zIndex = zBase + 10;
-          current.style.transform += ' scale(1.15)';
-        }
-      }, 120);
-      idx = (idx + 1) % allItems.length;
-    }, 3000);
-  }
-
-  function stopShuffle() {
-    clearInterval(interval);
-    notes.forEach(function(n, i) {
-      if (!n) return;
-      n.style.transition = 'transform 0.7s cubic-bezier(.68,-0.55,.27,1.55), opacity 0.6s, z-index 0s';
-      n.style.zIndex = '';
-      n.style.transform = n.style.transform.replace(/scale\([^)]+\)/, '').trim();
-    });
-    if (birthdayRightSpace) {
-      birthdayRightSpace.classList.remove('bring-to-front');
-      birthdayRightSpace.style.zIndex = 5;
+      document.removeEventListener('click', enableAudio);
+      document.removeEventListener('touchstart', enableAudio);
     }
   }
 
-  // Start shuffle animation on load
-  startShuffle();
+  document.addEventListener('click', enableAudio);
+  document.addEventListener('touchstart', enableAudio);
 
-  // Optionally, you can trigger the "move away" animation by clicking the birthday message
-  var birthdayMessage = document.querySelector('.birthday-message');
-  if (birthdayMessage) {
-    birthdayMessage.style.cursor = 'pointer';
-    birthdayMessage.addEventListener('click', function() {
-      if (animating) return;
-      animating = true;
-      stopShuffle();
-      setTimeout(function() {
-        // Add staggered delays for each note's "away" animation
-        notes.forEach(function(note, i) {
-          if (!note) return;
-          setTimeout(function() {
-            note.classList.add('away' + (i + 1));
-          }, i * 350); // 350ms delay between each note
-        });
-        // If you want to show a wish overlay, add it here
-        // setTimeout(function() {
-        //   wish.classList.add('visible');
-        // }, 700);
-      }, 5000);
+  // Photo note interactions
+  const photoNotes = document.querySelectorAll('.photo-note');
+  let currentZIndex = 1000;
+
+  photoNotes.forEach(photo => {
+    // Store original z-index
+    const originalZIndex = photo.style.zIndex || '5';
+    
+    photo.addEventListener('click', function() {
+      this.style.zIndex = currentZIndex++;
+      
+      // Add a little celebration effect
+      this.style.transform += ' scale(1.1)';
+      setTimeout(() => {
+        this.style.transform = this.style.transform.replace(' scale(1.1)', '');
+      }, 2000);
+    });
+  });
+
+  // Birthday card click effect
+  const birthdayCard = document.querySelector('.birthday-card');
+  birthdayCard.addEventListener('click', function() {
+    // Add a gentle shake animation
+    this.style.animation = 'none';
+    setTimeout(() => {
+      this.style.animation = 'cardShake 0.5s ease-in-out';
+    }, 10);
+    
+    // Create some celebration particles
+    createCelebrationParticles();
+  });
+
+  // Function to create celebration particles
+  function createCelebrationParticles() {
+    const particles = ['🎉', '✨', '🎊', '💖', '🌟'];
+    const container = document.querySelector('.main-container');
+    
+    for (let i = 0; i < 15; i++) {
+      const particle = document.createElement('div');
+      particle.textContent = particles[Math.floor(Math.random() * particles.length)];
+      particle.style.position = 'absolute';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.top = Math.random() * 100 + '%';
+      particle.style.fontSize = (Math.random() * 20 + 20) + 'px';
+      particle.style.pointerEvents = 'none';
+      particle.style.zIndex = '1000';
+      particle.style.animation = 'particleFade 2s ease-out forwards';
+      
+      container.appendChild(particle);
+      
+      // Remove particle after animation
+      setTimeout(() => {
+        if (particle.parentNode) {
+          particle.parentNode.removeChild(particle);
+        }
+      }, 2000);
+    }
+  }
+
+  // Add celebration animations to CSS dynamically
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes cardShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+    
+    @keyframes particleFade {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-100px) scale(0.5);
+      }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Random photo shuffle animation
+  function shufflePhotos() {
+    photoNotes.forEach((photo, index) => {
+      setTimeout(() => {
+        // Store original transform and position
+        const originalTransform = photo.style.transform || '';
+        const originalPosition = photo.style.position || 'absolute';
+        const originalZIndex = photo.style.zIndex || '5';
+        
+        // Animate to front with scale and position change
+        photo.style.transform = originalTransform + ' scale(1.15)';
+        photo.style.zIndex = '10000'; // High z-index to appear above birthday card
+        photo.style.position = 'fixed'; // Ensure it breaks out of stacking context
+        photo.style.transition = 'transform 0.3s ease-in-out';
+        
+        // Reset after animation
+        setTimeout(() => {
+          photo.style.transform = originalTransform;
+          photo.style.zIndex = originalZIndex;
+          photo.style.position = originalPosition;
+        }, 800); // Longer duration to see the effect better
+      }, index * 1200); // Delay between each image
     });
   }
-});
 
-document.addEventListener('DOMContentLoaded', () => {
-  const audio = document.getElementById('play-music');
+  // Start shuffle animation after page loads
+  setTimeout(shufflePhotos, 2000);
 
-  const enableAudio = () => {
-    audio.play().then(() => {
-      console.log("Audio is playing");
-    }).catch(e => {
-      console.warn("Autoplay blocked or audio failed:", e);
-    });
-    document.removeEventListener('click', enableAudio);
-  };
+  // Repeat shuffle every 15 seconds
+  setInterval(shufflePhotos, 15000);
 
-  document.addEventListener('click', enableAudio);
+  // Add some interactive messages
+  const messages = [
+    "Click on the photos to bring them forward! 📸",
+    "Click the birthday card for a surprise! 🎁",
+    "Happy Birthday Jessica! You're amazing! 💖",
+    "Enjoy this special day filled with love! 🌟"
+  ];
+
+  let messageIndex = 0;
+  function showInteractiveMessage() {
+    // You could implement a toast notification system here
+    console.log("💝 " + messages[messageIndex]);
+    messageIndex = (messageIndex + 1) % messages.length;
+  }
+
+  // Show interactive messages every 10 seconds
+  setInterval(showInteractiveMessage, 10000);
+  
+  // Show first message after 3 seconds
+  setTimeout(showInteractiveMessage, 3000);
+
+  console.log("🎂 Birthday website loaded successfully! Happy Birthday Jessica! 🎉");
 });
