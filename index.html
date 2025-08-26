@@ -5,22 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Happy Birthday Jessica! 💖</title>
   <link href="https://fonts.googleapis.com/css?family=Indie+Flower:400,700&display=swap" rel="stylesheet">
-  <link href="styles.css" rel="stylesheet">
+  <link href="styles_beautiful.css" rel="stylesheet">
 </head>
 <body>
   <!-- Background love letter -->
   <div class="background-letter">
     My Dearest Jessica,
 
-    From the very first moment our paths crossed, something inside me knew that you were different — beautifully, radiantly different. There's a gentleness in your soul, a kindness in your smile, and a spark in your eyes that brightens even my darkest days.
+    From the very first moment our paths crossed, something inside me knew that you were different, beautifully, radiantly different. There's a gentleness in your soul, a kindness in your smile, and a spark in your eyes that brightens even my darkest days.
 
-    You make love feel effortless. Every small moment with you — from the silly laughs to the quiet silences — feels like magic. You've turned ordinary days into memories I'll treasure forever. You have this beautiful way of making people feel seen, valued, and loved, and I'm beyond blessed to be one of those people.
+    You make love feel effortless. Every small moment with you, from the silly laughs to the quiet silences, feels like magic. You've turned ordinary days into memories I'll treasure forever. You have this beautiful way of making people feel seen, valued, and loved, and I'm beyond blessed to be one of those people.
 
     On this special day, your birthday, I want you to know how deeply you're cherished. You deserve every flower, every smile, every celebration — because you are a light in this world. A rare, beautiful light. I hope today reminds you of how special you are, not just to me, but to everyone lucky enough to know you.
 
     May this year bring you closer to your dreams, fill your heart with joy, and surround you with the same love and warmth that you so effortlessly give to others. I'll always be your biggest fan, your quiet cheerleader, your hand to hold.
 
-    Happy Birthday, my love.  
+    Happy Birthday, Jessica.  
     Always yours,  
     Your Person 💖
   </div>
@@ -37,6 +37,20 @@
     <span class="floating-heart" style="left: 75%; animation-delay: 3.5s;">💗</span>
     <span class="floating-heart" style="left: 85%; animation-delay: 0.5s;">💖</span>
     <span class="floating-heart" style="left: 95%; animation-delay: 4.5s;">💗</span>
+  </div>
+
+  <!-- Floating balloons animation -->
+  <div class="floating-balloons">
+    <span class="floating-balloon" style="left: 8%; animation-delay: 0.5s;">🎈</span>
+    <span class="floating-balloon" style="left: 18%; animation-delay: 2.5s;">🎈</span>
+    <span class="floating-balloon" style="left: 28%; animation-delay: 1s;">🎈</span>
+    <span class="floating-balloon" style="left: 38%; animation-delay: 3.5s;">🎈</span>
+    <span class="floating-balloon" style="left: 48%; animation-delay: 2s;">🎈</span>
+    <span class="floating-balloon" style="left: 58%; animation-delay: 4s;">🎈</span>
+    <span class="floating-balloon" style="left: 68%; animation-delay: 1.5s;">🎈</span>
+    <span class="floating-balloon" style="left: 78%; animation-delay: 3s;">🎈</span>
+    <span class="floating-balloon" style="left: 88%; animation-delay: 0.8s;">🎈</span>
+    <span class="floating-balloon" style="left: 98%; animation-delay: 4.2s;">🎈</span>
   </div>
 
   <!-- Main container -->
@@ -89,31 +103,46 @@
       </div>
     </div>
 
-    <!-- Central birthday message -->
-    <div class="birthday-card">
-      <div class="card-header">
-        <h1>🎂 Happy Birthday Jessica! 🎂</h1>
-      </div>
-      <div class="card-content">
-        <p class="main-message">
-          Wishing you a magical birthday filled with love, laughter, and your favorite moments.
-        </p>
-        <p class="special-message">
-          You are truly special and deserve all the happiness in the world. 💕
-        </p>
-        <div class="birthday-emojis">🎉✨🌟💖🎈</div>
-        <div class="signature">
-          With all my love,<br>
-          <strong>Your Person</strong>
+    <!-- Folded Birthday Card -->
+    <div class="folded-card-container">
+      <div class="birthday-card" id="birthdayCard">
+        <!-- Card Front (Closed State) -->
+        <div class="card-front">
+          <div class="front-decoration">
+            <div class="center-heart">❤️</div>
+            <h2>🎂 For Jessica 🎂</h2>
+            <p class="tap-instruction">Tap to open your special card! ✨</p>
+            <div class="birthday-emojis-front">🎉🎈🌟💖</div>
+          </div>
+        </div>
+        
+        <!-- Card Back (Opened State) -->
+        <div class="card-back">
+          <div class="card-header">
+            <h1>🎂 Happy Birthday Jessica! 🎂</h1>
+          </div>
+          <div class="card-content">
+            <p class="main-message">
+              Wishing you a magical birthday filled with love, laughter, and your favorite moments.
+            </p>
+            <p class="special-message">
+              You are truly special and deserve all the happiness in the world. 💕
+            </p>
+            <div class="birthday-emojis">🎉✨🌟💖🎈🎂💕⭐</div>
+            <div class="signature">
+              With all my love,<br>
+              <strong>Felix</strong>
+            </div>
+            <p class="close-instruction">Tap again to close the card 💝</p>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Decorative elements -->
-    <div class="center-heart">❤️</div>
     <div class="celebration-text">Make a wish! ✨</div>
   </div>
 
-  <script src="script.js"></script>
+  <script src="script_beautiful.js"></script>
 </body>
 </html>
