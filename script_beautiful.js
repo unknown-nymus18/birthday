@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.addEventListener('click', enableAudio);
   document.addEventListener('touchstart', enableAudio);
 
-  // Photo note interactions
+  // Photo note interactions with mobile support
   const photoNotes = document.querySelectorAll('.photo-note');
   let currentZIndex = 1000;
 
@@ -28,34 +28,43 @@ document.addEventListener('DOMContentLoaded', function() {
     // Store original z-index
     const originalZIndex = photo.style.zIndex || '5';
     
-    photo.addEventListener('click', function() {
-      this.style.zIndex = currentZIndex++;
+    // Function to handle photo interaction
+    function handlePhotoInteraction() {
+      photo.style.zIndex = currentZIndex++;
       
       // Enhanced celebration effect with sparkles
-      this.style.transform += ' scale(1.15)';
-      this.classList.add('celebration-glow');
+      photo.style.transform += ' scale(1.15)';
+      photo.classList.add('celebration-glow');
       
       // Create mini sparkles around the photo
-      createMiniSparkles(this);
+      createMiniSparkles(photo);
       
       setTimeout(() => {
-        this.style.transform = this.style.transform.replace(' scale(1.15)', '');
-        this.classList.remove('celebration-glow');
+        photo.style.transform = photo.style.transform.replace(' scale(1.15)', '');
+        photo.classList.remove('celebration-glow');
       }, 1500);
+    }
+    
+    // Add both click and touch event listeners
+    photo.addEventListener('click', handlePhotoInteraction);
+    photo.addEventListener('touchend', function(e) {
+      e.preventDefault(); // Prevent double-firing on mobile
+      handlePhotoInteraction();
     });
   });
 
-  // Enhanced folded birthday card click effect
+  // Enhanced folded birthday card with mobile support
   const birthdayCard = document.getElementById('birthdayCard');
   let isCardOpen = false;
   
-  birthdayCard.addEventListener('click', function() {
+  // Function to handle card toggle
+  function handleCardToggle() {
     // Toggle card open/close state
     isCardOpen = !isCardOpen;
     
     if (isCardOpen) {
       // Open the card
-      this.classList.add('opened');
+      birthdayCard.classList.add('opened');
       
       // Create enhanced celebration particles
       setTimeout(() => {
@@ -65,22 +74,57 @@ document.addEventListener('DOMContentLoaded', function() {
       console.log("🎂✨ Birthday card opened! Happy Birthday Jessica! 🎉💖");
     } else {
       // Close the card
-      this.classList.remove('opened');
+      birthdayCard.classList.remove('opened');
       
       // Add subtle closing effect
-      this.style.animation = 'none';
+      birthdayCard.style.animation = 'none';
       setTimeout(() => {
-        this.style.animation = 'gentleFloat 0.6s ease-in-out';
+        birthdayCard.style.animation = 'gentleFloat 0.6s ease-in-out';
       }, 10);
       
       console.log("💝 Birthday card closed gently");
     }
     
     // Add temporary magical glow
-    this.classList.add('magical-glow');
+    birthdayCard.classList.add('magical-glow');
     setTimeout(() => {
-      this.classList.remove('magical-glow');
+      birthdayCard.classList.remove('magical-glow');
     }, 1500);
+  }
+  
+  // Card click functionality removed as requested
+  
+  // Add music playback functionality to card
+  function playBirthdayMusic() {
+    if (!audioStarted) {
+      audio.play().then(() => {
+        console.log("🎵 Birthday music started from card interaction!");
+        audioStarted = true;
+        
+        // Add visual feedback for music start
+        birthdayCard.classList.add('magical-glow');
+        setTimeout(() => {
+          birthdayCard.classList.remove('magical-glow');
+        }, 2000);
+        
+      }).catch(e => {
+        console.warn("Audio playback failed:", e);
+      });
+    } else {
+      // Music is already playing, just add visual feedback
+      birthdayCard.classList.add('magical-glow');
+      setTimeout(() => {
+        birthdayCard.classList.remove('magical-glow');
+      }, 1000);
+      console.log("🎵 Birthday music is already playing!");
+    }
+  }
+  
+  // Add click and touch event listeners for music playback
+  birthdayCard.addEventListener('click', playBirthdayMusic);
+  birthdayCard.addEventListener('touchend', function(e) {
+    e.preventDefault(); // Prevent double-firing on mobile
+    playBirthdayMusic();
   });
 
   // Function to create mini sparkles around photos
@@ -192,19 +236,34 @@ document.addEventListener('DOMContentLoaded', function() {
         // Store original values
         const originalTransform = photo.style.transform || '';
         
-        // Add magical animation effect
+        // Add magical animation effect with enhanced z-index
         photo.classList.add('animating');
-        photo.style.transform = originalTransform + ' scale(1.2)';
-        photo.style.transition = 'transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+        photo.style.zIndex = '100000'; // Ensure it's above everything
+        photo.style.transform = originalTransform + ' scale(1.3) translateZ(0)';
+        photo.style.transition = 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
         photo.classList.add('magical-glow');
+        
+        // Add extra emphasis - move photo slightly towards center
+        const rect = photo.getBoundingClientRect();
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        const photoX = rect.left + rect.width / 2;
+        const photoY = rect.top + rect.height / 2;
+        
+        // Calculate movement towards center (subtle)
+        const moveX = (centerX - photoX) * 0.1;
+        const moveY = (centerY - photoY) * 0.1;
+        
+        photo.style.transform = originalTransform + ` scale(1.3) translate(${moveX}px, ${moveY}px) translateZ(0)`;
         
         // Reset after animation with enhanced timing
         setTimeout(() => {
           photo.style.transform = originalTransform;
+          photo.style.zIndex = '';
           photo.classList.remove('animating');
           photo.classList.remove('magical-glow');
           photo.style.transition = '';
-        }, 1000);
+        }, 1200);
       }, index * 1500); // Slightly longer delay for more dramatic effect
     });
   }
