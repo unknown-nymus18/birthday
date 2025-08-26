@@ -317,15 +317,15 @@ body {
   width: 500px;
   position: relative;
   min-height: auto; /* Changed from fixed height to auto to fit content */
-  /* Beautiful translucent background that works everywhere */
+  /* iOS-compatible background approach */
   background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.4), 
-    rgba(255, 255, 255, 0.25));
+    rgba(255, 255, 255, 0.6), 
+    rgba(255, 255, 255, 0.45));
   /* Add subtle backdrop blur for supported browsers */
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   /* Enhanced border */
-  border: 2px solid rgba(255, 255, 255, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.7);
   border-radius: 25px;
   padding: 40px;
   text-align: center;
@@ -335,6 +335,24 @@ body {
     0 8px 20px rgba(0, 0, 0, 0.1),
     inset 0 1px 3px rgba(255, 255, 255, 0.6);
   cursor: pointer;
+  /* Ensure proper stacking */
+  z-index: 20;
+}
+
+/* iOS-specific blur effect using pseudo-element */
+.birthday-card::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  background: inherit;
+  border-radius: 30px;
+  filter: blur(8px);
+  opacity: 0.8;
+  z-index: -1;
+  pointer-events: none;
 }
 
 .birthday-card:hover {
@@ -694,6 +712,26 @@ body {
     /* Smoother transition for iOS */
     transition: all 1.4s cubic-bezier(0.23, 1, 0.32, 1);
     -webkit-transition: all 1.4s cubic-bezier(0.23, 1, 0.32, 1);
+    /* Enhanced iOS blur effect */
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.75), 
+      rgba(255, 255, 255, 0.6));
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    /* iOS-specific shadow enhancement */
+    box-shadow: 
+      0 30px 80px rgba(0, 0, 0, 0.2),
+      0 15px 35px rgba(0, 0, 0, 0.15),
+      inset 0 2px 5px rgba(255, 255, 255, 0.8);
+  }
+  
+  /* Enhanced pseudo-element blur for iOS */
+  .birthday-card::before {
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.4), 
+      rgba(255, 255, 255, 0.3));
+    filter: blur(12px);
+    opacity: 1;
+    -webkit-filter: blur(12px);
   }
   
   .card-front, .card-back {
@@ -714,5 +752,46 @@ body {
       0 10px 35px rgba(0, 0, 0, 0.18),
       0 5px 18px rgba(0, 0, 0, 0.12),
       inset 0 1px 3px rgba(255, 255, 255, 0.85);
+  }
+}
+
+/* iPhone X specific optimizations */
+@media only screen 
+  and (device-width: 375px) 
+  and (device-height: 812px) 
+  and (-webkit-device-pixel-ratio: 3) {
+  
+  .birthday-card {
+    /* iPhone X specific blur simulation */
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.85), 
+      rgba(255, 255, 255, 0.7)) !important;
+    border: 2px solid rgba(255, 255, 255, 0.9) !important;
+    /* Extra layer effect to simulate blur */
+    box-shadow: 
+      0 35px 90px rgba(0, 0, 0, 0.25),
+      0 20px 45px rgba(0, 0, 0, 0.18),
+      inset 0 3px 8px rgba(255, 255, 255, 0.9),
+      0 0 0 1px rgba(255, 255, 255, 0.6) !important;
+  }
+  
+  .birthday-card::before {
+    display: none; /* Remove pseudo-element on iPhone X */
+  }
+  
+  .birthday-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, 
+      rgba(255, 255, 255, 0.2) 0%, 
+      rgba(255, 255, 255, 0.1) 50%, 
+      transparent 70%);
+    border-radius: 25px;
+    pointer-events: none;
+    z-index: 1;
   }
 }
