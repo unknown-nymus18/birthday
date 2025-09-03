@@ -233,18 +233,27 @@ document.addEventListener('DOMContentLoaded', function() {
   function shufflePhotos() {
     photoNotes.forEach((photo, index) => {
       setTimeout(() => {
-        // Store original values
+        // Store original values and position
         const originalTransform = photo.style.transform || '';
+        const rect = photo.getBoundingClientRect();
         
         // Add magical animation effect with enhanced z-index
         photo.classList.add('animating');
-        photo.style.zIndex = '100000'; // Ensure it's above everything
-        photo.style.transform = originalTransform + ' scale(1.3) translateZ(0)';
+        photo.style.zIndex = '999999'; // Ensure it's above everything
+        
+        // Set fixed position to break out of parent stacking context
+        photo.style.position = 'fixed';
+        photo.style.top = rect.top + 'px';
+        photo.style.left = rect.left + 'px';
+        photo.style.width = rect.width + 'px';
+        photo.style.height = rect.height + 'px';
+        
+        // Apply animation transform
+        photo.style.transform = 'scale(1.3) translateZ(100px)';
         photo.style.transition = 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
         photo.classList.add('magical-glow');
         
         // Add extra emphasis - move photo slightly towards center
-        const rect = photo.getBoundingClientRect();
         const centerX = window.innerWidth / 2;
         const centerY = window.innerHeight / 2;
         const photoX = rect.left + rect.width / 2;
@@ -254,10 +263,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const moveX = (centerX - photoX) * 0.1;
         const moveY = (centerY - photoY) * 0.1;
         
-        photo.style.transform = originalTransform + ` scale(1.3) translate(${moveX}px, ${moveY}px) translateZ(0)`;
+        setTimeout(() => {
+          photo.style.transform = `scale(1.3) translate(${moveX}px, ${moveY}px) translateZ(100px)`;
+        }, 50);
         
         // Reset after animation with enhanced timing
         setTimeout(() => {
+          photo.style.position = '';
+          photo.style.top = '';
+          photo.style.left = '';
+          photo.style.width = '';
+          photo.style.height = '';
           photo.style.transform = originalTransform;
           photo.style.zIndex = '';
           photo.classList.remove('animating');

@@ -193,7 +193,7 @@ body {
 
 .photo-note.animating {
   position: fixed !important;
-  z-index: 99999 !important;
+  z-index: 999999 !important;
   /* Enhanced styling for animating photos */
   box-shadow: 
     0 30px 80px rgba(0, 0, 0, 0.25),
@@ -203,9 +203,11 @@ body {
   border-radius: 15px !important;
   /* Enhanced glow effect */
   filter: brightness(1.1) saturate(1.2);
-  /* Ensure hardware acceleration */
-  transform: translateZ(0);
+  /* Ensure hardware acceleration and break stacking context */
+  transform: translateZ(100px) !important;
   will-change: transform, filter;
+  /* Force to top layer */
+  isolation: isolate;
 }
 
 /* Magical glow effect for animating photos */

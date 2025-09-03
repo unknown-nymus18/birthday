@@ -1,0 +1,65 @@
+/* Horizontal belt styles */
+.horizontal-belt {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  width: 100vw;
+  height: 350px;
+  margin: 40px 0;
+}
+
+.belt-item {
+  flex: 0 0 220px;
+  margin: 0 20px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.belt-item img {
+  width: 180px;
+  height: 240px;
+  object-fit: cover;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.belt-item.card-item {
+  width: 220px;
+  height: 260px;
+  background: #fffbe9;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(255,192,203,0.25);
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Center item enlargement */
+.belt-item.center {
+  transform: scale(1.25);
+  z-index: 2;
+  box-shadow: 0 8px 32px rgba(255,192,203,0.35);
+}
+
+/* Animation helper */
+.horizontal-belt {
+  will-change: transform;
+}
+
+/* Hide scrollbars */
+.horizontal-belt::-webkit-scrollbar {
+  display: none;
+}
+
+.horizontal-belt {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
