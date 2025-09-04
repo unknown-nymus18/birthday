@@ -8,6 +8,93 @@ window.addEventListener('DOMContentLoaded', function() {
   let isAnimating = false;
   let itemWidth, containerWidth, offset;
   
+  // Initialize confetti
+  createConfetti();
+  
+  // Auto-play music
+  const audio = document.getElementById('play-music');
+  if (audio) {
+    audio.volume = 0.3;
+    // Try to auto-play (will work on user interaction)
+    audio.play().catch(() => {
+      // Auto-play failed, will play on first user interaction
+      document.addEventListener('click', () => {
+        audio.play();
+      }, { once: true });
+    });
+  }
+  
+  // Add click effects to images
+  items.forEach(item => {
+    const img = item.querySelector('img');
+    if (img) {
+      img.addEventListener('click', () => {
+        createClickEffect(img);
+        playClickSound();
+      });
+    }
+  });
+  
+  function createConfetti() {
+    const confettiContainer = document.getElementById('confettiContainer');
+    if (!confettiContainer) return;
+    
+    for (let i = 0; i < 50; i++) {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      confetti.style.left = Math.random() * 100 + '%';
+      confetti.style.animationDelay = Math.random() * 3 + 's';
+      confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+      confettiContainer.appendChild(confetti);
+    }
+  }
+  
+  function createClickEffect(element) {
+    const rect = element.getBoundingClientRect();
+    const effect = document.createElement('div');
+    effect.style.position = 'fixed';
+    effect.style.left = rect.left + rect.width/2 + 'px';
+    effect.style.top = rect.top + rect.height/2 + 'px';
+    effect.style.width = '20px';
+    effect.style.height = '20px';
+    effect.style.background = '#ff69b4';
+    effect.style.borderRadius = '50%';
+    effect.style.pointerEvents = 'none';
+    effect.style.zIndex = '1000';
+    effect.style.transform = 'translate(-50%, -50%) scale(0)';
+    effect.style.transition = 'all 0.6s ease-out';
+    
+    document.body.appendChild(effect);
+    
+    setTimeout(() => {
+      effect.style.transform = 'translate(-50%, -50%) scale(3)';
+      effect.style.opacity = '0';
+    }, 10);
+    
+    setTimeout(() => {
+      document.body.removeChild(effect);
+    }, 600);
+  }
+  
+  function playClickSound() {
+    // Create a subtle click sound using Web Audio API
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
+    
+    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.1);
+  }
+  
   function calculateDimensions() {
     // Get responsive dimensions
     containerWidth = beltContainer.offsetWidth;
