@@ -11,16 +11,72 @@ window.addEventListener('DOMContentLoaded', function() {
   // Initialize confetti
   createConfetti();
   
-  // Auto-play music
+  // Auto-play music on any user interaction
   const audio = document.getElementById('play-music');
+  let musicStarted = false;
+  
   if (audio) {
     audio.volume = 0.3;
-    // Try to auto-play (will work on user interaction)
+    
+    // Function to start music
+    function startMusic() {
+      if (!musicStarted) {
+        audio.play().then(() => {
+          musicStarted = true;
+          console.log('🎵 Music started playing!');
+          showMusicNotification();
+        }).catch(error => {
+          console.log('Music play failed:', error);
+        });
+      }
+    }
+    
+    // Function to show music notification
+    function showMusicNotification() {
+      const notification = document.createElement('div');
+      notification.innerHTML = '🎵 Music Started! 🎵';
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,192,203,0.8));
+        color: #d63384;
+        padding: 12px 20px;
+        border-radius: 25px;
+        font-weight: bold;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255,192,203,0.5);
+        box-shadow: 0 4px 15px rgba(255,192,203,0.3);
+        animation: slideInFade 3s ease-out forwards;
+        font-size: 14px;
+        text-align: center;
+      `;
+      
+      document.body.appendChild(notification);
+      
+      // Remove notification after 3 seconds
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.style.animation = 'fadeOut 0.5s ease-out forwards';
+          setTimeout(() => {
+            notification.remove();
+          }, 500);
+        }
+      }, 2500);
+    }
+    
+    // Add event listeners for any user interaction
+    const interactionEvents = ['click', 'touchstart', 'mousedown', 'keydown'];
+    
+    interactionEvents.forEach(event => {
+      document.addEventListener(event, startMusic, { once: true });
+    });
+    
+    // Also try auto-play immediately
     audio.play().catch(() => {
-      // Auto-play failed, will play on first user interaction
-      document.addEventListener('click', () => {
-        audio.play();
-      }, { once: true });
+      // Auto-play failed, music will start on first interaction
+      console.log('Auto-play blocked, waiting for user interaction...');
     });
   }
   
