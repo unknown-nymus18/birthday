@@ -3,6 +3,66 @@ window.addEventListener('DOMContentLoaded', function() {
   const beltContainer = document.querySelector('.belt-container');
   const belt = document.querySelector('.horizontal-belt');
   const items = Array.from(document.querySelectorAll('.belt-item'));
+  const mobileCenterView = document.querySelector('.mobile-center-view');
+  // Mobile data: images and card
+  const mobileData = [
+    { type: 'img', src: 'assets/img1.JPG', alt: 'Memory 1', text: 'SO CUTE 🫢🫢' },
+    { type: 'img', src: 'assets/img2.JPG', alt: 'Memory 2', text: 'How can someone be so cute ❤️' },
+    { type: 'img', src: 'assets/img5.JPG', alt: 'Memory 5', text: 'One more memory just for you! 🌟' },
+    { type: 'img', src: 'assets/img8.JPG', alt: 'Memory 8', text: 'My fav picture 🫢🫢' },
+    { type: 'img', src: 'assets/img3.JPG', alt: 'Memory 3', text: 'Drag the papers 🤭' },
+    { type: 'img', src: 'assets/img4.JPG', alt: 'Memory 4', text: 'Happy Birthday 💐🎉' },
+    { type: 'img', src: 'assets/img6.JPG', alt: 'Memory 6', text: 'Another special moment! ✨' },
+    { type: 'img', src: 'assets/img7.JPG', alt: 'Memory 7', text: 'Enjoy your day 💕' },
+    { type: 'card' }
+  ];
+  function renderMobileView(idx) {
+    mobileCenterView.innerHTML = '';
+    const data = mobileData[idx];
+    if (data.type === 'img') {
+      const img = document.createElement('img');
+      img.src = data.src;
+      img.alt = data.alt;
+      const p = document.createElement('p');
+      p.textContent = data.text;
+      p.style.textAlign = 'center';
+      mobileCenterView.appendChild(img);
+      mobileCenterView.appendChild(p);
+    } else if (data.type === 'card') {
+      const card = document.createElement('div');
+      card.className = 'mobile-card';
+      card.innerHTML = `
+        <div class="card-header">
+          <h1>🎂 Happy Birthday Jessica! 🎂</h1>
+        </div>
+        <div class="card-content">
+          <p class="main-message">
+            Wishing you a magical birthday filled with love, laughter, and your favorite moments.
+          </p>
+          <p class="special-message">
+            You are truly special and deserve all the happiness in the world. 💕
+          </p>
+          <div class="signature">
+            With all my love,<br>
+            <strong>Felix</strong>
+          </div>
+        </div>
+      `;
+      mobileCenterView.appendChild(card);
+    }
+  }
+  function handleMobileTransition() {
+    let idx = 0;
+    renderMobileView(idx);
+    setInterval(() => {
+      idx = (idx + 1) % mobileData.length;
+      renderMobileView(idx);
+    }, 2500);
+  }
+  function isMobile() {
+    return window.innerWidth <= 480;
+  }
+  
   let currentIndex = 0;
   let actualPosition = 0; // Track actual position for endless scrolling
   let isAnimating = false;
@@ -171,17 +231,21 @@ window.addEventListener('DOMContentLoaded', function() {
   // Create multiple copies for truly endless scrolling
   const originalCount = items.length;
   const totalCopies = 20; // Create many copies for smooth endless scrolling
+  let allItems;
   
-  // Create multiple sets of items
-  for (let copy = 0; copy < totalCopies; copy++) {
-    items.forEach(item => {
-      const clone = item.cloneNode(true);
-      clone.classList.add(`clone-${copy}`);
-      belt.appendChild(clone);
-    });
+  // Only run belt logic if not mobile
+  if (!isMobile()) {
+    // Create multiple sets of items
+    for (let copy = 0; copy < totalCopies; copy++) {
+      items.forEach(item => {
+        const clone = item.cloneNode(true);
+        clone.classList.add(`clone-${copy}`);
+        belt.appendChild(clone);
+      });
+    }
   }
 
-  const allItems = Array.from(belt.children);
+  allItems = Array.from(belt.children);
   
   function positionBelt() {
     calculateDimensions();
@@ -263,25 +327,51 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Initialize
-  calculateDimensions();
-  belt.style.transition = 'none';
-  positionBelt();
+  // Mobile display management
+  function updateMobileDisplay() {
+    if (isMobile()) {
+      beltContainer.style.display = 'none';
+      mobileCenterView.style.display = 'flex';
+      handleMobileTransition();
+    } else {
+      beltContainer.style.display = '';
+      mobileCenterView.style.display = 'none';
+    }
+  }
   
-  // Initialize first center item after a delay
-  setTimeout(() => {
-    allItems.forEach((item, index) => {
-      const itemPattern = index % originalCount;
-      if (itemPattern === currentIndex) {
-        item.classList.add('center');
-      }
-    });
-    belt.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-  }, 500);
+  // Initial setup - set display first
+  updateMobileDisplay();
   
-  // Start animation after 3 seconds
-  setTimeout(animateToNext, 3000);
+  // Then initialize desktop animation if not mobile
+  if (!isMobile()) {
+    calculateDimensions();
+    belt.style.transition = 'none';
+    positionBelt();
+    
+    // Initialize first center item after a delay
+    setTimeout(() => {
+      allItems.forEach((item, index) => {
+        const itemPattern = index % originalCount;
+        if (itemPattern === currentIndex) {
+          item.classList.add('center');
+        }
+      });
+      belt.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+    }, 500);
+    
+    // Start animation after 3 seconds
+    setTimeout(animateToNext, 3000);
+  }
   
-  // Handle resize events
-  window.addEventListener('resize', handleResize);
+  window.addEventListener('resize', () => {
+    updateMobileDisplay();
+    if (!isMobile()) {
+      handleResize();
+    }
+  });
+  
+  // Make sure handleResize is available for desktop
+  if (!isMobile()) {
+    window.addEventListener('resize', handleResize);
+  }
 });
