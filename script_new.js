@@ -51,13 +51,42 @@ window.addEventListener('DOMContentLoaded', function() {
       mobileCenterView.appendChild(card);
     }
   }
+  
+  let mobileTransitionInterval; // Track the interval
+  let isTransitioning = false; // Prevent multiple simultaneous transitions
+  
   function handleMobileTransition() {
+    // Prevent multiple simultaneous calls
+    if (isTransitioning) {
+      return;
+    }
+    
+    isTransitioning = true;
+    
+    // Clear any existing interval first
+    if (mobileTransitionInterval) {
+      clearInterval(mobileTransitionInterval);
+    }
+    
     let idx = 0;
     renderMobileView(idx);
-    setInterval(() => {
+    mobileTransitionInterval = setInterval(() => {
       idx = (idx + 1) % mobileData.length;
       renderMobileView(idx);
     }, 2500);
+    
+    // Reset the flag after a brief delay
+    setTimeout(() => {
+      isTransitioning = false;
+    }, 100);
+  }
+  
+  function stopMobileTransition() {
+    if (mobileTransitionInterval) {
+      clearInterval(mobileTransitionInterval);
+      mobileTransitionInterval = null;
+    }
+    isTransitioning = false;
   }
   function isMobile() {
     return window.innerWidth <= 480;
@@ -334,6 +363,7 @@ window.addEventListener('DOMContentLoaded', function() {
       mobileCenterView.style.display = 'flex';
       handleMobileTransition();
     } else {
+      stopMobileTransition(); // Stop mobile transition when switching to desktop
       beltContainer.style.display = '';
       mobileCenterView.style.display = 'none';
     }
